@@ -1139,14 +1139,14 @@
                                                             <li><a href="#"><i class="fa fa-star"></i></a></li>
                                                             <li><a href="#"><i class="fa fa-star"></i></a></li>
                                                         </ul>
-                                                    </div>
+                                    </div>
                                                     <h4><a href="#">Crown Summit</a></h4>
                                                     <div class="product-price">
                                                         <ul>
                                                             <li>$36.00</li>
                                                             <li class="old-price">$38.00</li>
                                                         </ul>
-                                                    </div>
+                                </div>
                                                     <p>The sporty Joust Duffle Bag can't be beat - not in the gym, not on the luggage carousel, not anywhere. Big enough to haul a basketball or soccer ball and some sneakers with plenty of room to spare,... </p>
                                                 </div>
                                                 <div class="product-link">
