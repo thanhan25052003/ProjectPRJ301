@@ -68,7 +68,7 @@
             </header>
             <!-- header-area-end -->
             <!-- breadcrumbs-area-start -->
-            <jsp:include page="../common/breadcrumbs-area.jsp"></jsp:include>
+        <jsp:include page="../common/breadcrumbs-area.jsp"></jsp:include>
             <!-- breadcrumbs-area-end -->
             <!-- shop-main-area-start -->
             <div class="shop-main-area mb-70">
@@ -85,7 +85,7 @@
                                 <div class="left-menu mb-30">
                                     <ul>
                                     <c:forEach items="${listCategory}" var="c">
-                                        <li><a href="#">${c.name}<span>(15)</span></a></li>
+                                        <li><a href="home?search=category&categoryId=${c.id}">${c.name}<span>(15)</span></a></li>
                                         </c:forEach> 
                                 </ul> 
                             </div>
@@ -340,7 +340,7 @@
                                             <div class="product-wrapper mb-40">
                                                 <div class="product-img">
                                                     <a href="product-details?id=${p.id}">
-                                                        <img src="${pageContext.request.contextPath}/img/product/1.jpg" alt="book" class="primary" />
+                                                        <img src="${p.image}" alt="book" class="primary" /> 
                                                     </a>
                                                     <div class="quick-view">
                                                         <a class="action-view" href="#" data-bs-target="#productModal" data-bs-toggle="modal" title="Quick View">

@@ -70,8 +70,8 @@
                                     <div class="col-lg-5 col-md-6 col-12">
                                         <div class="flexslider">
                                             <ul class="slides">
-                                                <li data-thumb="${pageContext.request.contextPath}/img/thum-2/1.jpg">
-                                                <img src="${pageContext.request.contextPath}/img/flex/1.jpg" alt="woman" />
+                                                <li data-thumb="${product.image}">
+                                                <img src="${product.image}" alt="woman" />
                                             </li>
                                         </ul>
                                     </div>
