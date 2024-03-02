@@ -4,7 +4,6 @@
  */
 package controller;
 
-import dal.implement.CategoryDAO;
 import dal.implement.ProductDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,19 +11,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import model.Category;
 import model.Product;
 
 /**
  *
  * @author admin
  */
-public class HomeController extends HttpServlet {
+public class ProductDetailsController extends HttpServlet {
 
     ProductDAO productDAO = new ProductDAO();
-    CategoryDAO categoryDao = new CategoryDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +38,10 @@ public class HomeController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HomeController</title>");
+            out.println("<title>Servlet ProductDetailsController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HomeController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ProductDetailsController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,15 +59,16 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Product> listProduct = productDAO.findAll();
-        //get list category
-        List<Category> listCategory = categoryDao.findAll();
-
-        //set listProduct, listCategory to session
-        HttpSession session = request.getSession();
-        session.setAttribute("listProduct", listProduct);
-        session.setAttribute("listCategory", listCategory);
-        request.getRequestDispatcher("view/homepage/home.jsp").forward(request, response);
+        //get ve id cua product
+        int id = Integer.parseInt(request.getParameter("id"));
+        Product product = Product.builder()
+                .id(id)
+                .build();
+        //lay product tu database
+        Product productFoundById = productDAO.findById(product);
+        //set product vao request va chuyen sang trang product-details.jsp
+        request.setAttribute("product", productFoundById);
+        request.getRequestDispatcher("view/homepage/product-details.jsp").forward(request, response);
     }
 
     /**
