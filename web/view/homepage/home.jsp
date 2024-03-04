@@ -54,21 +54,21 @@
         <!-- header-area-start -->
         <header>
             <!-- header-top-area-start -->
-            <jsp:include page="../common/header-top-area.jsp"></jsp:include>
+            <jsp:include page="../common/homePage/header-top-area.jsp"></jsp:include>
                 <!-- header-top-area-end -->
                 <!-- header-mid-area-start -->
-            <jsp:include page="../common/header-mid-area.jsp"></jsp:include>
+            <jsp:include page="../common/homePage/header-mid-area.jsp"></jsp:include>
                 <!-- header-mid-area-end -->
                 <!-- main-menu-area-start -->
-            <jsp:include page="../common/main-menu-area.jsp"></jsp:include>   
+            <jsp:include page="../common/homePage/main-menu-area.jsp"></jsp:include>   
                 <!-- main-menu-area-end -->
                 <!-- mobile-menu-area-start -->
-            <jsp:include page="../common/mobile-menu-area.jsp"></jsp:include>   
+            <jsp:include page="../common/homePage/mobile-menu-area.jsp"></jsp:include>   
                 <!-- mobile-menu-area-end -->
             </header>
             <!-- header-area-end -->
             <!-- breadcrumbs-area-start -->
-        <jsp:include page="../common/breadcrumbs-area.jsp"></jsp:include>
+            <jsp:include page="../common/homePage/breadcrumbs-area.jsp"></jsp:include>
             <!-- breadcrumbs-area-end -->
             <!-- shop-main-area-start -->
             <div class="shop-main-area mb-70">
@@ -381,11 +381,11 @@
                             </div>
                             <div class="page-number">
                                 <ul>
-                                    <li><a href="#" class="active">1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#" class="angle"><i class="fa fa-angle-right"></i></a></li>
+                                    <c:forEach begin="1" end="${pageControl.totalPage}" var="pageNumber">
+                                    <!--<li><a href="#" class="active">1</a></li>-->
+                                    <li><a href="${pageControl.urlPattern}page=${pageNumber}">${pageNumber}</a></li>
+                                    </c:forEach>
+                                    <li><a href="#" class="angle"><i class="fa fa-angle-right"></i></a></li>                                
                                 </ul>
                             </div>
                         </div>
@@ -396,7 +396,7 @@
         </div>
         <!-- shop-main-area-end -->
         <!-- footer-area-start -->
-        <jsp:include page="../common/footer.jsp"></jsp:include>
+        <jsp:include page="../common/homePage/footer.jsp"></jsp:include>
             <!-- footer-area-end -->
             <!-- Modal -->
             <div class="modal fade" id="productModal" tabindex="-1" role="dialog">
