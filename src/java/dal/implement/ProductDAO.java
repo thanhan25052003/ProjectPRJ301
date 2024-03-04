@@ -23,7 +23,7 @@ public class ProductDAO extends GenericDAO<Product> {
 
     @Override
     public int insert(Product t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return insertGenericDAO(t);
     }
 
     public static void main(String[] args) {
@@ -113,6 +113,14 @@ public class ProductDAO extends GenericDAO<Product> {
         parameterMap.put("offset", (page - 1) * CommonConst.RECORD_PER_PAGE);
         parameterMap.put("fetch", CommonConst.RECORD_PER_PAGE);
         return queryGenericDAO(Product.class, sql, parameterMap);
+    }
+
+    public void deleteById(int id) {
+        String sql = "DELETE FROM [dbo].[Product]\n"
+                + "      WHERE [id] = ?";
+        parameterMap = new LinkedHashMap<>();
+        parameterMap.put("id", id);
+        deleteGenericDAO(sql, parameterMap);
     }
 
 }
