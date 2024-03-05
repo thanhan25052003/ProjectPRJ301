@@ -142,7 +142,51 @@ public class ProductAdminServlet extends HttpServlet {
     }
 
     private void editProduct(HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // get data
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String name = request.getParameter("name");
+            float price = Float.parseFloat(request.getParameter("price"));
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
+            String description = request.getParameter("description");
+            int categoryId = Integer.parseInt(request.getParameter("category"));
+
+            // image
+            Part part = request.getPart("image");
+            String imagePath = null;
+            if (part.getSubmittedFileName() == null
+                    || part.getSubmittedFileName().trim().isEmpty()
+                    || part == null) {
+                imagePath = request.getParameter("currentImage");
+            } else {
+                // duong dan luu anh
+                String path = request.getServletContext().getRealPath("/images");
+                File dir = new File(path);
+                // xem duongd an nay ton tai chua
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                File image = new File(dir, part.getSubmittedFileName());
+                // ghi file vao trong duong dan
+                part.write(image.getAbsolutePath());
+                // lay ra cai context path cua project
+                imagePath = request.getContextPath() + "/images/" + image.getName();
+            }
+
+            Product product = Product.builder()
+                    .id(id)
+                    .name(name)
+                    .quantity(quantity)
+                    .price(price)
+                    .description(description)
+                    .categoryId(categoryId)
+                    .image(imagePath)
+                    .build();
+            pdao.update(product);
+        } catch (NumberFormatException | IOException | ServletException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }
