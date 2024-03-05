@@ -4,18 +4,23 @@
  */
 package controller.authen;
 
+import constant.CommonConst;
+import dal.implement.AccountDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Account;
 
 /**
  *
  * @author admin
  */
 public class AuthenticationController extends HttpServlet {
+
+    AccountDAO accountDAO = new AccountDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -45,7 +50,8 @@ public class AuthenticationController extends HttpServlet {
     }
 
     private String logOut(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        request.getSession().removeAttribute(CommonConst.SESSION_ACCOUNT);
+        return "home";
     }
 
     @Override
@@ -71,11 +77,49 @@ public class AuthenticationController extends HttpServlet {
     }
 
     private String loginDoPost(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String url = null;
+        //get về các thong tin người dufg nhập
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        //kiểm tra thông tin có tồn tại trong DB ko
+        Account account = Account.builder()
+                .username(username)
+                .password(password)
+                .build();
+        Account accFoundByUsernamePass = accountDAO.findByUsernameAndPass(account);
+        //true => trang home ( set account vao trong session ) 
+        if (accFoundByUsernamePass != null) {
+            request.getSession().setAttribute(CommonConst.SESSION_ACCOUNT,
+                    accFoundByUsernamePass);
+            url = "home";
+            //false => quay tro lai trang login ( set them thong bao loi )
+        } else {
+            request.setAttribute("error", "Username or password incorrect!!");
+            url = "view/authen/login.jsp";
+        }
+        return url;
     }
 
     private String signUp(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String url;
+        //get ve cac thong tin nguoi dung nhpa
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        //kiem tra xem username da ton tai trong db
+        Account account = Account.builder()
+                .username(username)
+                .password(password)
+                .build();
+        boolean isExistUsername = accountDAO.checkUsernameExist(account);
+        //true => quay tro lai trang register (set thong bao loi )
+        if (isExistUsername) {
+            request.setAttribute("error", "Username exist !!");
+            url = "view/authen/register.jsp";
+            //false => quay tro lai trang home ( ghi tai khoan vao trong DB )
+        } else {
+            accountDAO.insert(account);
+            url = "home";
+        }
+        return url;
     }
-
 }

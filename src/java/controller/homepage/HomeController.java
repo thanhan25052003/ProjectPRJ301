@@ -24,10 +24,10 @@ import model.Product;
  * @author admin
  */
 public class HomeController extends HttpServlet {
-
+    
     ProductDAO productDAO = new ProductDAO();
     CategoryDAO categoryDao = new CategoryDAO();
-
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -44,7 +44,7 @@ public class HomeController extends HttpServlet {
             out.println("</html>");
         }
     }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -60,13 +60,13 @@ public class HomeController extends HttpServlet {
         request.setAttribute("pageControl", pageControl);
         request.getRequestDispatcher("view/homepage/home.jsp").forward(request, response);
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.sendRedirect("home");
     }
-
+    
     @Override
     public String getServletInfo() {
         return "Short description";
@@ -122,5 +122,5 @@ public class HomeController extends HttpServlet {
         pagecontrol.setTotalRecord(totalRecord);
         return listProduct;
     }
-
+    
 }
