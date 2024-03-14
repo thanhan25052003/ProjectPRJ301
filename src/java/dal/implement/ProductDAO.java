@@ -6,13 +6,13 @@ package dal.implement;
 
 import constant.CommonConst;
 import dal.GenericDAO;
+import model.Product;
 import java.util.LinkedHashMap;
 import java.util.List;
-import model.Product;
 
 /**
  *
- * @author admin
+ * @author ADMIN
  */
 public class ProductDAO extends GenericDAO<Product> {
 
@@ -24,12 +24,6 @@ public class ProductDAO extends GenericDAO<Product> {
     @Override
     public int insert(Product t) {
         return insertGenericDAO(t);
-    }
-
-    public static void main(String[] args) {
-        for (Product product : new ProductDAO().findAll()) {
-            System.out.println(product);
-        }
     }
 
     public Product findById(Product product) {
@@ -113,6 +107,7 @@ public class ProductDAO extends GenericDAO<Product> {
         parameterMap.put("offset", (page - 1) * CommonConst.RECORD_PER_PAGE);
         parameterMap.put("fetch", CommonConst.RECORD_PER_PAGE);
         return queryGenericDAO(Product.class, sql, parameterMap);
+
     }
 
     public void deleteById(int id) {

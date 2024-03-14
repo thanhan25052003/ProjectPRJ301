@@ -5,12 +5,12 @@
 package dal.implement;
 
 import dal.GenericDAO;
-import java.util.List;
 import model.Role;
+import java.util.List;
 
 /**
  *
- * @author admin
+ * @author ADMIN
  */
 public class RoleDAO extends GenericDAO<Role> {
 

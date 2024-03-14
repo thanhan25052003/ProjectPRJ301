@@ -5,13 +5,13 @@
 package dal.implement;
 
 import dal.GenericDAO;
+import model.Account;
 import java.util.LinkedHashMap;
 import java.util.List;
-import model.Account;
 
 /**
  *
- * @author admin
+ * @author ADMIN
  */
 public class AccountDAO extends GenericDAO<Account> {
 
@@ -63,4 +63,5 @@ public class AccountDAO extends GenericDAO<Account> {
                 sql,
                 parameterMap).isEmpty();
     }
+
 }

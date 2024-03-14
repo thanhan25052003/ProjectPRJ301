@@ -57,7 +57,7 @@
                 <!-- mobile-menu-area-end -->
             </header>
             <!-- breadcrumbs-area-start -->
-            <jsp:include page="../common/homePage/breadcrumbs-area.jsp"></jsp:include>
+        <jsp:include page="../common/homePage/breadcrumbs-area.jsp"></jsp:include>
             <!-- breadcrumbs-area-end -->
             <!-- product-main-area-start -->
             <div class="product-main-area mb-70">
@@ -98,7 +98,7 @@
                                         <div class="product-add-form">
                                             <form action="#">
                                                 <div class="quality-button">
-                                                    <input class="qty" type="number" value="1">
+                                                    <input class="qty" type="number" name="quantity" value="1">
                                                 </div>
                                                 <a href="#">Add to cart</a>
                                             </form>
