@@ -12,7 +12,6 @@
                 <div class="breadcrumbs-menu">
                     <ul>
                         <li><a href="#">Home</a></li>
-                        <li><a href="#" class="active">shop</a></li>
                     </ul>
                 </div>
             </div>

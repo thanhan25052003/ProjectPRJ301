@@ -15,10 +15,6 @@
                         <nav>
                             <ul>
                                 <li><a href="#">home</a></li>
-                                <li><a href="#">Enable Cookies</a></li>
-                                <li><a href="#">Privacy and Cookie Policy</a></li>
-                                <li><a href="#">contact us</a></li>
-                                <li><a href="#">blog</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -105,7 +101,7 @@
             <div class="row bt-2">
                 <div class="col-lg-6 col-md-6 col-12">
                     <div class="copy-right-area">
-                        <p>&copy; 2022 <strong> Koparion </strong> Mede with ❤️ by <a href="https://hasthemes.com/" target="_blank"><strong>HasThemes</strong></a></p>
+                        <p>&copy; 2024 <strong> Mobile </strong> Shop with ❤️ by <a href="https://www.facebook.com/an.nguyenthanh.10485/" target="_blank"><strong>Nguyen Thanh An</strong></a></p>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-12">

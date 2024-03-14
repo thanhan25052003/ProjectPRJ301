@@ -4,6 +4,7 @@
  */
 package controller.admin;
 
+// Import các package và class cần thiết
 import dal.implement.CategoryDAO;
 import dal.implement.ProductDAO;
 import java.io.IOException;
@@ -19,20 +20,21 @@ import java.io.File;
 import model.Product;
 
 /**
- *
- * @author admin
+ * ProductAdminServlet xử lý các yêu cầu quản lý sản phẩm từ admin.
  */
-@MultipartConfig
+@MultipartConfig // Chỉ ra rằng Servlet này hỗ trợ upload file
 public class ProductAdminServlet extends HttpServlet {
 
+    // Khởi tạo DAOs để tương tác với cơ sở dữ liệu
     ProductDAO pdao = new ProductDAO();
     CategoryDAO cateDAO = new CategoryDAO();
 
+    // Xử lý yêu cầu HTTP GET và POST mặc định
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
+            // Cơ bản in ra một trang HTML
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -48,145 +50,113 @@ public class ProductAdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        processRequest(request, response); // Gọi lại processRequest
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // set enconding UTF-8
+        // Đặt encoding để hỗ trợ tiếng Việt
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
-        // get session
-        HttpSession session = request.getSession();
-        // get action
-        String action = request.getParameter("action") == null
-                ? ""
-                : request.getParameter("action");
+        // Lấy action từ request để xác định hành động: thêm, xoá, sửa sản phẩm
+        String action = request.getParameter("action") == null ? "" : request.getParameter("action");
         switch (action) {
             case "add":
-                addProduct(request);
+                addProduct(request); // Thêm sản phẩm mới
                 break;
             case "delete":
-                deleteProduct(request);
+                deleteProduct(request); // Xoá sản phẩm
                 break;
             case "edit":
-                editProduct(request);
+                editProduct(request); // Sửa thông tin sản phẩm
+                break;
             default:
-
+            // Nếu không có hành động nào được xác định
         }
-        response.sendRedirect("dashboard");
+        response.sendRedirect("dashboard"); // Chuyển hướng về trang dashboard sau khi xử lý
     }
 
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+    // Phương thức thêm sản phẩm mới
+    private void addProduct(HttpServletRequest request) throws IOException, ServletException {
+        // Lấy thông tin sản phẩm từ form
+        String name = request.getParameter("name");
+        int price = Integer.parseInt(request.getParameter("price"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        String description = request.getParameter("description");
+        int categoryId = Integer.parseInt(request.getParameter("category"));
 
-    private void addProduct(HttpServletRequest request) {
-        try {
-            // get name
-            String name = request.getParameter("name");
-            // get price
-            int price = Integer.parseInt(request.getParameter("price"));
-            // get quantity
-            int quantity = Integer.parseInt(request.getParameter("quantity"));
-            // get description
-            String description = request.getParameter("description");
-            // get category Id
-            int categoryId = Integer.parseInt(request.getParameter("category"));
+        // Xử lý upload ảnh
+        Part part = request.getPart("image");
+        String imagePath = uploadImage(request, part);
 
-            // image
-            Part part = request.getPart("image");
-            String imagePath = null;
-            if (part.getSubmittedFileName() == null
-                    || part.getSubmittedFileName().trim().isEmpty()
-                    || part == null) {
-                imagePath = null;
-            } else {
-                // duong dan luu anh
-                String path = request.getServletContext().getRealPath("/images");
-                File dir = new File(path);
-                // xem duong an nay ton tai chua
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-
-                File image = new File(dir, part.getSubmittedFileName());
-                // ghi file vao trong duong dan
-                part.write(image.getAbsolutePath());
-                // lay ra cai context path cua project
-                imagePath = request.getContextPath() + "/images/" + image.getName();
-            }
-
-            Product product = Product.builder()
-                    .name(name)
-                    .price(price)
-                    .quantity(quantity)
-                    .categoryId(categoryId)
-                    .description(description)
-                    .image(imagePath)
-                    .build();
-            pdao.insert(product);
-        } catch (NumberFormatException | IOException | ServletException ex) {
-            ex.printStackTrace();
-        }
+        // Tạo đối tượng Product mới và thêm vào cơ sở dữ liệu
+        Product product = Product.builder()
+                .name(name)
+                .price(price)
+                .quantity(quantity)
+                .categoryId(categoryId)
+                .description(description)
+                .image(imagePath)
+                .build();
+        pdao.insert(product);
     }
 
+    // Phương thức xoá sản phẩm
     private void deleteProduct(HttpServletRequest request) {
-        // get id
         int id = Integer.parseInt(request.getParameter("id"));
         pdao.deleteById(id);
     }
 
-    private void editProduct(HttpServletRequest request) {
-        // get data
-        try {
-            int id = Integer.parseInt(request.getParameter("id"));
-            String name = request.getParameter("name");
-            float price = Float.parseFloat(request.getParameter("price"));
-            int quantity = Integer.parseInt(request.getParameter("quantity"));
-            String description = request.getParameter("description");
-            int categoryId = Integer.parseInt(request.getParameter("category"));
+    // Phương thức sửa sản phẩm
+    private void editProduct(HttpServletRequest request) throws IOException, ServletException {
+        // Lấy thông tin sản phẩm và thực hiện cập nhật
+        int id = Integer.parseInt(request.getParameter("id"));
+        String name = request.getParameter("name");
+        float price = Float.parseFloat(request.getParameter("price"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        String description = request.getParameter("description");
+        int categoryId = Integer.parseInt(request.getParameter("category"));
 
-            // image
-            Part part = request.getPart("image");
-            String imagePath = null;
-            if (part.getSubmittedFileName() == null
-                    || part.getSubmittedFileName().trim().isEmpty()
-                    || part == null) {
-                imagePath = request.getParameter("currentImage");
-            } else {
-                // duong dan luu anh
-                String path = request.getServletContext().getRealPath("/images");
-                File dir = new File(path);
-                // xem duongd an nay ton tai chua
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
+        // Xử lý upload ảnh mới, nếu có
+        Part part = request.getPart("image");
+        String currentImagePath = request.getParameter("currentImage");
+        String imagePath = uploadImageWithCurrent(request, part, currentImagePath);
 
-                File image = new File(dir, part.getSubmittedFileName());
-                // ghi file vao trong duong dan
-                part.write(image.getAbsolutePath());
-                // lay ra cai context path cua project
-                imagePath = request.getContextPath() + "/images/" + image.getName();
-            }
-
-            Product product = Product.builder()
-                    .id(id)
-                    .name(name)
-                    .quantity(quantity)
-                    .price(price)
-                    .description(description)
-                    .categoryId(categoryId)
-                    .image(imagePath)
-                    .build();
-            pdao.update(product);
-        } catch (NumberFormatException | IOException | ServletException ex) {
-            ex.printStackTrace();
-        }
+        // Cập nhật đối tượng Product và lưu vào cơ sở dữ liệu
+        Product product = Product.builder()
+                .id(id)
+                .name(name)
+                .quantity(quantity)
+                .price(price)
+                .description(description)
+                .categoryId(categoryId)
+                .image(imagePath)
+                .build();
+        pdao.update(product);
     }
 
+    // Hỗ trợ upload ảnh và trả về đường dẫn ảnh
+    private String uploadImage(HttpServletRequest request, Part part) throws IOException {
+        String imagePath = null;
+        if (part != null && part.getSubmittedFileName() != null && !part.getSubmittedFileName().trim().isEmpty()) {
+            String path = request.getServletContext().getRealPath("/images");
+            File dir = new File(path);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File image = new File(dir, part.getSubmittedFileName());
+            part.write(image.getAbsolutePath());
+            imagePath = request.getContextPath() + "/images/" + image.getName();
+        }
+        return imagePath;
+    }
+
+    // Hỗ trợ upload ảnh mới nếu có, nếu không sử dụng ảnh hiện tại
+    private String uploadImageWithCurrent(HttpServletRequest request, Part part, String currentImagePath) throws IOException {
+        String newPath = uploadImage(request, part);
+        return newPath != null ? newPath : currentImagePath;
+    }
 }

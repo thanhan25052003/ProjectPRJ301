@@ -4,6 +4,7 @@
  */
 package dal.implement;
 
+// Import các class cần thiết từ các gói khác
 import constant.CommonConst;
 import dal.GenericDAO;
 import model.Product;
@@ -11,46 +12,36 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- *
- * @author ADMIN
+ * Lớp ProductDAO mở rộng từ GenericDAO và được dùng để tương tác với bảng
+ * Product trong cơ sở dữ liệu.
  */
 public class ProductDAO extends GenericDAO<Product> {
 
     @Override
     public List<Product> findAll() {
+        // Phương thức truy vấn tất cả sản phẩm từ cơ sở dữ liệu
         return queryGenericDAO(Product.class);
     }
 
     @Override
     public int insert(Product t) {
+        // Phương thức chèn một sản phẩm mới vào cơ sở dữ liệu
         return insertGenericDAO(t);
     }
 
     public Product findById(Product product) {
-        String sql = "SELECT [id]\n"
-                + "      ,[name]\n"
-                + "      ,[image]\n"
-                + "      ,[quantity]\n"
-                + "      ,[price]\n"
-                + "      ,[description]\n"
-                + "      ,[categoryId]\n"
-                + "  FROM [dbo].[Product]\n"
-                + "  where id = ?";
+        // Câu lệnh SQL để tìm sản phẩm theo ID
+        String sql = "SELECT [id], [name], [image], [quantity], [price], [description], [categoryId] FROM [dbo].[Product] WHERE id = ?";
         parameterMap = new LinkedHashMap<>();
         parameterMap.put("id", product.getId());
         List<Product> list = queryGenericDAO(Product.class, sql, parameterMap);
-        //neu nhu list ma empty => ko co san pham => tra ve null
-        //nguoc lai list ma ko empty => co san pham => nam o vi tri dau tien => lay ve o vi tri so 0
+        // Kiểm tra nếu danh sách trả về không có sản phẩm nào thì trả về null, ngược lại trả về sản phẩm đầu tiên
         return list.isEmpty() ? null : list.get(0);
     }
 
     public List<Product> findByCategory(String categoryId, int page) {
-        String sql = "SELECT *\n"
-                + "  FROM [Product]\n"
-                + "  where categoryId = ?\n"
-                + "  ORDER BY id\n"
-                + "  OFFSET ? ROWS\n" //( PAGE - 1 ) * Y
-                + "  FETCH NEXT ? ROWS ONLY"; // NUMBER_RECORD_PER_PAGE
+        // Câu lệnh SQL để truy vấn sản phẩm theo danh mục và phân trang
+        String sql = "SELECT * FROM [Product] WHERE categoryId = ? ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         parameterMap = new LinkedHashMap<>();
         parameterMap.put("categoryId", categoryId);
         parameterMap.put("offset", (page - 1) * CommonConst.RECORD_PER_PAGE);
@@ -59,12 +50,8 @@ public class ProductDAO extends GenericDAO<Product> {
     }
 
     public List<Product> findByName(String keyword, int page) {
-        String sql = "SELECT *\n"
-                + "  FROM [Product]\n"
-                + "  where [name] like ?"
-                + "  ORDER BY id\n"
-                + "  OFFSET ? ROWS\n" //( PAGE - 1 ) * Y
-                + "  FETCH NEXT ? ROWS ONLY"; // NUMBER_RECORD_PER_PAGE
+        // Tương tự như findByCategory nhưng tìm kiếm sản phẩm theo từ khóa trong tên
+        String sql = "SELECT * FROM [Product] WHERE [name] LIKE ? ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         parameterMap = new LinkedHashMap<>();
         parameterMap.put("name", "%" + keyword + "%");
         parameterMap.put("offset", (page - 1) * CommonConst.RECORD_PER_PAGE);
@@ -73,61 +60,50 @@ public class ProductDAO extends GenericDAO<Product> {
     }
 
     public int findTotalRecordByCategory(String categoryId) {
-        String sql = "SELECT count(*)\n"
-                + "  FROM Product\n"
-                + "  where categoryId = ?";
+        // Câu lệnh SQL để đếm tổng số sản phẩm trong một danh mục
+        String sql = "SELECT count(*) FROM Product WHERE categoryId = ?";
         parameterMap = new LinkedHashMap<>();
         parameterMap.put("categoryId", categoryId);
         return findTotalRecordGenericDAO(Product.class, sql, parameterMap);
     }
 
     public int findTotalRecordByName(String keyword) {
-        String sql = "SELECT count(*)\n"
-                + "  FROM Product\n"
-                + "  where [name] like ?";
+        // Đếm tổng số sản phẩm theo từ khóa tìm kiếm
+        String sql = "SELECT count(*) FROM Product WHERE [name] LIKE ?";
         parameterMap = new LinkedHashMap<>();
         parameterMap.put("name", "%" + keyword + "%");
         return findTotalRecordGenericDAO(Product.class, sql, parameterMap);
     }
 
     public int findTotalRecord() {
-        String sql = "SELECT count(*)\n"
-                + "  FROM Product\n";
+        // Đếm tổng số sản phẩm trong cơ sở dữ liệu
+        String sql = "SELECT count(*) FROM Product";
         parameterMap = new LinkedHashMap<>();
         return findTotalRecordGenericDAO(Product.class, sql, parameterMap);
     }
 
     public List<Product> findByPage(int page) {
-        String sql = "SELECT *\n"
-                + "  FROM Product\n"
-                + "  ORDER BY id\n"
-                + "  OFFSET ? ROWS\n" //( PAGE - 1 ) * Y
-                + "  FETCH NEXT ? ROWS ONLY"; // NUMBER_RECORD_PER_PAGE
+        // Truy vấn sản phẩm và phân trang
+        String sql = "SELECT * FROM Product ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         parameterMap = new LinkedHashMap<>();
         parameterMap.put("offset", (page - 1) * CommonConst.RECORD_PER_PAGE);
         parameterMap.put("fetch", CommonConst.RECORD_PER_PAGE);
         return queryGenericDAO(Product.class, sql, parameterMap);
-
     }
 
     public void deleteById(int id) {
-        String sql = "DELETE FROM [dbo].[Product]\n"
-                + "      WHERE [id] = ?";
+        // Câu lệnh SQL để xoá một sản phẩm theo ID
+        String sql = "DELETE FROM [dbo].[Product] WHERE [id] = ?";
         parameterMap = new LinkedHashMap<>();
         parameterMap.put("id", id);
         deleteGenericDAO(sql, parameterMap);
     }
 
     public void update(Product product) {
-        String sql = "UPDATE [dbo].[Product]\n"
-                + "   SET [name] = ?\n"
-                + "      ,[image] = ?\n"
-                + "      ,[quantity] = ?\n"
-                + "      ,[price] = ?\n"
-                + "      ,[description] = ?\n"
-                + "      ,[categoryId] = ?\n"
-                + " WHERE id = ?";
+        // Câu lệnh SQL để cập nhật thông tin sản phẩm
+        String sql = "UPDATE [dbo].[Product] SET [name] = ?, [image] = ?, [quantity] = ?, [price] = ?, [description] = ?, [categoryId] = ? WHERE id = ?";
         parameterMap = new LinkedHashMap<>();
+        // Đặt giá trị cho các tham số từ đối tượng product
         parameterMap.put("name", product.getName());
         parameterMap.put("image", product.getImage());
         parameterMap.put("quantity", product.getQuantity());

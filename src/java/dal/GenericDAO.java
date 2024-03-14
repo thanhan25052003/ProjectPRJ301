@@ -218,7 +218,7 @@ public abstract class GenericDAO<T> extends DBContext {
         else if (Map.class.isAssignableFrom(fieldType)) {
             return null; // Bỏ qua và không xử lý gì nữa
         }
-        
+
         // Kiểm tra kiểu dữ liệu và convert sang đúng kiểu
         if (fieldType == String.class) {
             return rs.getString(fieldName);
@@ -232,7 +232,7 @@ public abstract class GenericDAO<T> extends DBContext {
             return rs.getBoolean(fieldName);
         } else if (fieldType == float.class || fieldType == Float.class) {
             return rs.getFloat(fieldName);
-        } else if ( fieldType == Timestamp.class) {
+        } else if (fieldType == Timestamp.class) {
             return rs.getTimestamp(fieldName);
         } else {
             return rs.getObject(fieldName);

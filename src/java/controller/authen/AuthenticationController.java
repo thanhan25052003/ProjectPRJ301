@@ -4,10 +4,10 @@
  */
 package controller.authen;
 
+// Import các thư viện và class cần thiết
 import constant.CommonConst;
 import dal.implement.AccountDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,111 +15,100 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Account;
 
 /**
- *
- * @author admin
+ * AuthenticationController kế thừa từ HttpServlet, xử lý các yêu cầu đăng nhập,
+ * đăng ký và đăng xuất.
  */
 public class AuthenticationController extends HttpServlet {
 
+    // Khởi tạo AccountDAO để tương tác với cơ sở dữ liệu tài khoản
     AccountDAO accountDAO = new AccountDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //get ve action
-        String action = request.getParameter("action") != null
-                ? request.getParameter("action")
-                : "";
-        //dua theo action set URL trang can chuyen den
+        // Lấy tham số action từ request để xác định hành động: đăng nhập, đăng xuất, hoặc đăng ký
+        String action = request.getParameter("action") != null ? request.getParameter("action") : "";
+        // Dựa vào action để định tuyến URL cần chuyển đến
         String url;
         switch (action) {
             case "login":
-                url = "view/authen/login.jsp";
+                url = "view/authen/login.jsp"; // URL trang đăng nhập
                 break;
             case "log-out":
-                url = logOut(request, response);
+                url = logOut(request, response); // Hàm xử lý đăng xuất
                 break;
             case "sign-up":
-                url = "view/authen/register.jsp";
+                url = "view/authen/register.jsp"; // URL trang đăng ký
                 break;
             default:
-                url = "home";
+                url = "home"; // URL trang chủ
         }
-
-        //chuyen trang
+        // Chuyển trang dựa trên URL đã định tuyến
         request.getRequestDispatcher(url).forward(request, response);
     }
 
     private String logOut(HttpServletRequest request, HttpServletResponse response) {
+        // Xoá thông tin tài khoản khỏi session để đăng xuất
         request.getSession().removeAttribute(CommonConst.SESSION_ACCOUNT);
-        return "home";
+        return "home"; // Trở về trang chủ sau khi đăng xuất
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //get ve action
-        String action = request.getParameter("action") != null
-                ? request.getParameter("action")
-                : "";
-        //dựa theo action để xử lí request
+        // Lại lấy tham số action từ request để xác định hành động
+        String action = request.getParameter("action") != null ? request.getParameter("action") : "";
+        // Dựa vào action để xử lý request
         String url;
         switch (action) {
             case "login":
-                url = loginDoPost(request, response);
+                url = loginDoPost(request, response); // Hàm xử lý đăng nhập
                 break;
             case "sign-up":
-                url = signUp(request, response);
+                url = signUp(request, response); // Hàm xử lý đăng ký
                 break;
             default:
-                url = "home";
+                url = "home"; // Nếu không xác định được action, trở về trang chủ
         }
+        // Chuyển trang dựa trên URL đã định tuyến
         request.getRequestDispatcher(url).forward(request, response);
     }
 
     private String loginDoPost(HttpServletRequest request, HttpServletResponse response) {
-        String url = null;
-        //get về các thong tin người dufg nhập
+        // Lấy thông tin username và password từ form đăng nhập
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        //kiểm tra thông tin có tồn tại trong DB ko
-        Account account = Account.builder()
-                .username(username)
-                .password(password)
-                .build();
+        // Tạo đối tượng Account dựa trên thông tin nhận được
+        Account account = Account.builder().username(username).password(password).build();
+        // Kiểm tra thông tin đăng nhập trong cơ sở dữ liệu
         Account accFoundByUsernamePass = accountDAO.findByUsernameAndPass(account);
-        //true => trang home ( set account vao trong session ) 
         if (accFoundByUsernamePass != null) {
-            request.getSession().setAttribute(CommonConst.SESSION_ACCOUNT,
-                    accFoundByUsernamePass);
-            url = "home";
-            //false => quay tro lai trang login ( set them thong bao loi )
+            // Nếu đăng nhập thành công, lưu thông tin tài khoản vào session và chuyển đến trang chủ
+            request.getSession().setAttribute(CommonConst.SESSION_ACCOUNT, accFoundByUsernamePass);
+            return "home";
         } else {
+            // Nếu đăng nhập thất bại, trả về trang đăng nhập và hiển thị thông báo lỗi
             request.setAttribute("error", "Username or password incorrect!!");
-            url = "view/authen/login.jsp";
+            return "view/authen/login.jsp";
         }
-        return url;
     }
 
     private String signUp(HttpServletRequest request, HttpServletResponse response) {
-        String url;
-        //get ve cac thong tin nguoi dung nhpa
+        // Lấy thông tin từ form đăng ký
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        //kiem tra xem username da ton tai trong db
-        Account account = Account.builder()
-                .username(username)
-                .password(password)
-                .build();
+        // Tạo đối tượng Account mới
+        Account account = Account.builder().username(username).password(password).build();
+        // Kiểm tra username đã tồn tại trong cơ sở dữ liệu hay chưa
         boolean isExistUsername = accountDAO.checkUsernameExist(account);
-        //true => quay tro lai trang register (set thong bao loi )
         if (isExistUsername) {
+            // Nếu username đã tồn tại, trả về trang đăng ký và hiển thị thông báo lỗi
             request.setAttribute("error", "Username exist !!");
-            url = "view/authen/register.jsp";
-            //false => quay tro lai trang home ( ghi tai khoan vao trong DB )
+            return "view/authen/register.jsp";
         } else {
+            // Nếu username chưa tồn tại, thêm tài khoản mới vào cơ sở dữ liệu và chuyển đến trang chủ
             accountDAO.insert(account);
-            url = "home";
+            return "home";
         }
-        return url;
     }
 }

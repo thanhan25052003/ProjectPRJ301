@@ -4,6 +4,7 @@
  */
 package controller.homepage;
 
+// Import các thư viện và class cần thiết
 import dal.implement.ProductDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,27 +15,27 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Product;
 
 /**
- *
- * @author admin
+ * ProductDetailsController kế thừa từ HttpServlet, chịu trách nhiệm xử lý chi
+ * tiết sản phẩm
  */
 public class ProductDetailsController extends HttpServlet {
 
+    // Khởi tạo ProductDAO để tương tác với cơ sở dữ liệu sản phẩm
     ProductDAO productDAO = new ProductDAO();
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Xử lý các yêu cầu HTTP GET và POST.
      *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @param request đối tượng yêu cầu servlet
+     * @param response đối tượng phản hồi servlet
+     * @throws ServletException nếu xảy ra lỗi cụ thể của servlet
+     * @throws IOException nếu xảy ra lỗi I/O
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
+            // Mẫu HTML được in ra để hiển thị trên trình duyệt
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -47,37 +48,38 @@ public class ProductDetailsController extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Xử lý yêu cầu HTTP GET.
      *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @param request đối tượng yêu cầu servlet
+     * @param response đối tượng phản hồi servlet
+     * @throws ServletException nếu xảy ra lỗi cụ thể của servlet
+     * @throws IOException nếu xảy ra lỗi I/O
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //get ve id cua product
+        // Lấy ID của sản phẩm từ yêu cầu
         int id = Integer.parseInt(request.getParameter("id"));
+        // Tạo một đối tượng Product với ID đã cho
         Product product = Product.builder()
                 .id(id)
                 .build();
-        //lay product tu database
+        // Tìm sản phẩm trong cơ sở dữ liệu bằng cách sử dụng DAO
         Product productFoundById = productDAO.findById(product);
-        //set product vao request va chuyen sang trang product-details.jsp
+        // Đặt sản phẩm tìm được vào request để có thể truy cập từ JSP
         request.setAttribute("product", productFoundById);
+        // Chuyển tiếp yêu cầu và phản hồi đến trang JSP chi tiết sản phẩm
         request.getRequestDispatcher("view/homepage/product-details.jsp").forward(request, response);
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Xử lý yêu cầu HTTP POST.
      *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @param request đối tượng yêu cầu servlet
+     * @param response đối tượng phản hồi servlet
+     * @throws ServletException nếu xảy ra lỗi cụ thể của servlet
+     * @throws IOException nếu xảy ra lỗi I/O
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -86,13 +88,12 @@ public class ProductDetailsController extends HttpServlet {
     }
 
     /**
-     * Returns a short description of the servlet.
+     * Trả về mô tả ngắn gọn về servlet.
      *
-     * @return a String containing servlet description
+     * @return một String chứa mô tả servlet
      */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }
