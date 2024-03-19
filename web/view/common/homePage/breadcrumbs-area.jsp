@@ -11,7 +11,7 @@
             <div class="col-lg-12">
                 <div class="breadcrumbs-menu">
                     <ul>
-                        <li><a href="#">Home</a></li>
+                        <li><a href="/ProjectPRJ301/home">Home</a></li>
                     </ul>
                 </div>
             </div>

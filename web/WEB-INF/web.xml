@@ -60,6 +60,10 @@
         <servlet-name>ProductDetailsController</servlet-name>
         <url-pattern>/product-details</url-pattern>
     </servlet-mapping>
+<!-- 
+    phần cấu hình <welcome-file-list> kết hợp với <servlet-mapping> của HomeController
+-->
+
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>

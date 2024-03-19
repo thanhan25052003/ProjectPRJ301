@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author ADMIN
  */
+// Định nghĩa lớp ExtensionFileFilter thực thi interface Filter để kiểm soát việc truy cập dựa trên đuôi file.
 public class ExtensionFileFilter implements Filter {
 
     private static final boolean debug = true;
@@ -103,16 +104,21 @@ public class ExtensionFileFilter implements Filter {
             log("ExtensionFileFilter:doFilter()");
         }
 
+        // Chuyển đổi ServletRequest và ServletResponse thành HttpServletRequest và HttpServletResponse.
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
-        //lay uri
+        // Lấy URI từ request.
         String url = req.getRequestURI();
+
+        // Kiểm tra xem URI có chứa ".html" không.
         if (url.contains(".html")) {
+            // Nếu có, điều hướng người dùng về trang chủ.
             resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
 
+        // Nếu không, cho phép request tiếp tục được xử lý.
         doBeforeProcessing(request, response);
 
         Throwable problem = null;

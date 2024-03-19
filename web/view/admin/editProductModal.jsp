@@ -86,14 +86,17 @@
 </div>
 
 <script>
+// Hàm `validateForm2` được sử dụng để kiểm tra dữ liệu nhập vào trong form chỉnh sửa sách trước khi submit. Nếu dữ liệu không hợp lệ, thông báo lỗi sẽ được hiển thị.
     function validateForm2() {
+        // Lấy giá trị từ các trường input
         let name = $('#nameEditInput').val();
         let price = $('#priceEditInput').val();
         let quantity = $('#quantityEditInput').val();
 
-        //xoá thông báo lỗi hiện tại
+        // Xoá thông báo lỗi hiện tại
         $('.error').html('');
 
+        // Kiểm tra từng trường và hiển thị thông báo lỗi tương ứng
         if (name === '') {
             $('#nameEditError').html('Tên sách không được để trống');
         }
@@ -110,7 +113,7 @@
             $('#priceEditError').html('Số lượng của quyển sách phải là số và không được nhỏ hơn 0');
         }
 
-        // Kiểm tra nếu không có lỗi thì submit form
+        // Kiểm tra nếu không có lỗi thì cho phép submit form
         let error = '';
         $('.error').each(function () {
             error += $(this).html();
@@ -122,11 +125,13 @@
         }
     }
 
+// Hàm `displayImage2` được sử dụng để hiển thị ảnh xem trước khi người dùng chọn một tệp ảnh mới trong form chỉnh sửa.
     function displayImage2(input) {
         var previewImage = document.getElementById("previewImage2");
         var file = input.files[0];
         var reader = new FileReader();
 
+        // Khi tệp đã được đọc thành công, hiển thị nó trong phần xem trước ảnh
         reader.onload = function (e) {
             previewImage.src = e.target.result;
             previewImage.style.display = "block";
@@ -135,8 +140,9 @@
         reader.readAsDataURL(file);
     }
 
-    <!-- function editProductModal(id, name, description, author, price, quantity, image, categoryId) { -->
+    // Hàm `editProductModal` được gọi khi người dùng muốn chỉnh sửa một sản phẩm. Nó điền thông tin sản phẩm vào form chỉnh sửa.
     function editProductModal(button) {
+        // Lấy thông tin sản phẩm từ dòng được chọn
         let id = $(button).closest('tr').find('td[name="id"]').text().trim();
         let name = $(button).closest('tr').find('td[name="name"]').text().trim();
         let author = $(button).closest('tr').find('td[name="author"]').text().trim();
@@ -146,14 +152,14 @@
         let categoryText = $(button).closest('tr').find('td[name="category"]').text().trim();
         let description = $(button).closest('tr').find('td[name="description"]').text().trim();
         let image = $(button).closest('tr').find('td[name="image"]').find('img').attr('src');
-
+        // Điền thông tin vào các trường của form chỉnh sửa
         $('#idEditInput').val(id);
         $('#nameEditInput').val(name);
         $('#authorEditInput').val(author);
         $('#priceEditInput').val(price);
         $('#quantityEditInput').val(quantity);
-        //loop through category list to select the category
-        $('#categoryEditInput option').each(function() {
+        // Chọn danh mục phù hợp trong dropdown
+        $('#categoryEditInput option').each(function () {
             if ($(this).text() === categoryText) {
                 $(this).prop('selected', true);
             }

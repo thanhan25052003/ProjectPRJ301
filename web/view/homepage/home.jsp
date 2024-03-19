@@ -43,6 +43,15 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/responsive.css">
         <!-- modernizr css -->
         <script src="${pageContext.request.contextPath}/js/vendor/modernizr-2.8.3.min.js"></script>
+
+        <style>
+            .product-img {
+                display: flex;
+                justify-content: center; /* Căn giữa theo chiều ngang */
+                align-items: center; /* Căn giữa theo chiều dọc */
+                height: 200px; /* Đặt chiều cao cho div, có thể thay đổi giá trị này */
+            }
+        </style>
     </head>
 
     <body class="shop">
@@ -119,7 +128,7 @@
                                             <div class="product-wrapper mb-40">
                                                 <div class="product-img">
                                                     <a href="product-details?id=${p.id}">
-                                                        <img src="${p.image}" alt="book" class="primary" /> 
+                                                        <img src="${p.image}" alt="book" class="primary" style="width: 100px; height: 150px; object-fit: cover;"/> 
                                                     </a>
                                                 </div>
                                                 <div class="product-details text-center">

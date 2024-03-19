@@ -76,7 +76,6 @@
                         <div class="col-lg-12">
                             <div class="login-title text-center mb-30">
                                 <h2>Login</h2>
-                                <p>doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo<br>inventore veritatis et quasi architecto beat</p>
                             </div>
                         </div>
                         <div class="offset-lg-3 col-lg-6 col-md-12 col-12">

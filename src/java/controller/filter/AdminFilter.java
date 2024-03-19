@@ -21,23 +21,25 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- *
- * @author ADMIN
+ * Lớp Filter kiểm soát quyền truy cập của admin. Chỉ cho phép người dùng có vai
+ * trò là quản trị viên (roleId = 1) truy cập vào một số tài nguyên nhất định.
  */
 public class AdminFilter implements Filter {
 
+    // Một biến cờ debug để bật/tắt việc ghi log trong quá trình phát triển.
     private static final boolean debug = true;
 
-    // The filter configuration object we are associated with.  If
-    // this value is null, this filter instance is not currently
-    // configured. 
+    // Biến filterConfig lưu trữ cấu hình của filter này, được khởi tạo thông qua phương thức init().
     private FilterConfig filterConfig = null;
 
+    // Constructor mặc định của lớp filter.
     public AdminFilter() {
     }
 
+    // Một phương thức private để thực hiện các tác vụ xử lý trước khi filter được áp dụng.
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
+        // Mã này dành cho việc ghi log hoặc thực hiện các tác vụ chuẩn bị trước khi request được xử lý.
         if (debug) {
             log("AdminFilter:DoBeforeProcessing");
         }
@@ -64,8 +66,10 @@ public class AdminFilter implements Filter {
          */
     }
 
+    // Một phương thức private khác để thực hiện các tác vụ sau khi request đã được xử lý.
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
+        // Mã này dành cho việc ghi log hoặc thực hiện các tác vụ dọn dẹp sau khi request được xử lý.
         if (debug) {
             log("AdminFilter:DoAfterProcessing");
         }
@@ -98,6 +102,7 @@ public class AdminFilter implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
+    // Phương thức chính của filter, dùng để kiểm soát quyền truy cập.
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
@@ -107,22 +112,25 @@ public class AdminFilter implements Filter {
         }
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
+
+        // Lấy đối tượng HttpSession từ request
         HttpSession session = req.getSession();
-        //kpiem tra xem da dang nhap  ( account da ton tai tren session )
+
+        // Kiểm tra đối tượng Account trong session để xác định vai trò của người dùng
         Account account = (Account) session.getAttribute(CommonConst.SESSION_ACCOUNT);
         if (account == null) {
-            //chua tung dang nhap
+            // Nếu không tìm thấy Account trong session, điều hướng người dùng đến trang đăng nhập
             resp.sendRedirect(req.getContextPath() + "/authen?action=login");
             return;
         } else {
-            //da dang nhap roi
-            //kiem tra xem quyen cua account
             if (account.getRoleId() != 1) {
+                // Nếu tìm thấy Account nhưng roleId không phải là 1 (không phải admin),
+                // cũng điều hướng người dùng đến trang đăng nhập
                 resp.sendRedirect(req.getContextPath() + "/authen?action=login");
                 return;
             }
         }
-
+        // Nếu người dùng là admin, cho phép request tiếp tục được xử lý bởi các filter hoặc servlet tiếp theo
         doBeforeProcessing(request, response);
 
         Throwable problem = null;
@@ -177,6 +185,7 @@ public class AdminFilter implements Filter {
      * Init method for this filter
      */
     public void init(FilterConfig filterConfig) {
+        // Phương thức khởi tạo cho filter, nhận cấu hình từ web.xml hoặc cấu hình động.
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
@@ -200,6 +209,7 @@ public class AdminFilter implements Filter {
     }
 
     private void sendProcessingError(Throwable t, ServletResponse response) {
+        // Một phương thức hỗ trợ để gửi thông tin lỗi khi có exception xảy ra trong quá trình xử lý request.
         String stackTrace = getStackTrace(t);
 
         if (stackTrace != null && !stackTrace.equals("")) {
@@ -230,6 +240,7 @@ public class AdminFilter implements Filter {
     }
 
     public static String getStackTrace(Throwable t) {
+        // Hỗ trợ lấy stack trace từ một Throwable dưới dạng String.
         String stackTrace = null;
         try {
             StringWriter sw = new StringWriter();
@@ -244,6 +255,7 @@ public class AdminFilter implements Filter {
     }
 
     public void log(String msg) {
+        // Phương thức để ghi log ra console hoặc file log của server.
         filterConfig.getServletContext().log(msg);
     }
 

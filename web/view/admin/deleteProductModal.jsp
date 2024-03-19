@@ -27,7 +27,7 @@
         </div>
     </div>
 </div>
-
+<!-- Mục đích là để cập nhật giá trị của input này, thường là để sử dụng trong việc xóa sản phẩm -->
 <script>
     function deleteProductModal(id) {
         let inputId = document.querySelector("#idDeleteInput");

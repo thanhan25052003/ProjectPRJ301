@@ -80,61 +80,63 @@
 </div>
 
 <script>
+    // Hàm này kiểm tra tính hợp lệ của các trường dữ liệu trong form
     function validateForm() {
+        // Lấy giá trị từ các trường nhập liệu
         let name = $('#nameInput').val();
-//        let author = $('#authorInput').val();
         let price = $('#priceInput').val();
         let quantity = $('#quantityInput').val();
 
-        //xoá thông báo lỗi hiện tại
+        // Xóa tất cả thông báo lỗi hiện tại
         $('.error').html('');
 
+        // Kiểm tra trường 'name' không được để trống
         if (name === '') {
             $('#nameError').html('Tên không được để trống');
         }
 
-//        if (author === '') {
-//            $('#authorError').html('Tên tác giả không được để trống');
-//        }
-
+        // Kiểm tra trường 'price' không được để trống và phải là số dương
         if (price === '') {
             $('#priceError').html('Giá của không được để trống');
         } else if (!$.isNumeric(price) || parseFloat(price) < 0) {
             $('#priceError').html('Giá của phải là số và không được nhỏ hơn 0');
         }
 
+        // Kiểm tra trường 'quantity' không được để trống và phải là số nguyên dương
         if (quantity === '') {
             $('#quantityError').html('Số lượng sách không được để trống');
-        } else if (!$.isNumeric(quantity) || parseInt(price) < 0) {
+        } else if (!$.isNumeric(quantity) || parseInt(quantity) < 0) {
+            // Lỗi: sử dụng sai tên biến, nên là `parseInt(quantity)`
             $('#priceError').html('Số lượng của phải là số và không được nhỏ hơn 0');
         }
 
-        // Kiểm tra nếu không có lỗi thì submit form
+        // Kiểm tra nếu có lỗi, ngăn chặn việc submit form
         let error = '';
         $('.error').each(function () {
             error += $(this).html();
         });
         if (error === '') {
-            $('#addProductForm').submit();
+            $('#addProductForm').submit(); // Submit form nếu không có lỗi
         } else {
-            event.preventDefault();
+            event.preventDefault(); // Ngăn chặn việc submit form nếu có lỗi
         }
     }
 
+    // Hàm này hiển thị hình ảnh xem trước khi người dùng chọn file ảnh
     function displayImage(input) {
         var previewImage = document.getElementById("previewImage");
         var file = input.files[0];
         var reader = new FileReader();
 
+        // Khi file được đọc thành công, hiển thị ảnh xem trước
         reader.onload = function (e) {
-            previewImage.src = e.target.result;
-            previewImage.style.display = "block";
+            previewImage.src = e.target.result; // Đặt source cho ảnh
+            previewImage.style.display = "block"; // Hiển thị ảnh
         }
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file); // Đọc file dưới dạng URL dữ liệu
     }
-
-
 </script>
+
 
 

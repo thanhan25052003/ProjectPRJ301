@@ -108,21 +108,22 @@ public class UserFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpSession session = req.getSession();
-        //kpiem tra xem da dang nhap  ( account da ton tai tren session )
+
+        // Kiểm tra xem người dùng đã đăng nhập chưa (tìm account trong session).
         Account account = (Account) session.getAttribute(CommonConst.SESSION_ACCOUNT);
         if (account == null) {
-            //chua tung dang nhap
+            // Nếu chưa đăng nhập, redirect đến trang đăng nhập.
             resp.sendRedirect(req.getContextPath() + "/authen?action=login");
             return;
         } else {
-            //da dang nhap roi
-            //kiem tra xem quyen cua account
+            // Nếu đã đăng nhập nhưng không phải người dùng với vai trò mong muốn (ví dụ roleId khác 2),
+            // cũng redirect đến trang đăng nhập.
             if (account.getRoleId() != 2) {
                 resp.sendRedirect(req.getContextPath() + "/authen?action=login");
                 return;
             }
         }
-
+        // Nếu người dùng đáp ứng điều kiện, cho phép request tiếp tục được xử lý.        
         doBeforeProcessing(request, response);
 
         Throwable problem = null;
